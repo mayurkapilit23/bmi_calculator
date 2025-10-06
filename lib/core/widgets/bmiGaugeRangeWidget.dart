@@ -10,7 +10,7 @@ class BMIGaugeRange extends StatelessWidget {
   const BMIGaugeRange({super.key, required this.bmi, required this.gender});
 
   final double bmi;
-  final Gender gender; // Non-nullable (or use `Gender?` with fallback)
+  final Gender gender;
 
   // Constants
   static const double _gaugeThickness = 0.2;
@@ -21,7 +21,6 @@ class BMIGaugeRange extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bmiProvider = Provider.of<BmiProvider>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return SfRadialGauge(
       enableLoadingAnimation: true,
@@ -91,13 +90,17 @@ class BMIGaugeRange extends StatelessWidget {
               widget: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    bmi.toStringAsFixed(1),
-                    style: GoogleFonts.montserrat(
-                      fontSize: _bmiTextSize,
-                      fontWeight: FontWeight.bold,
-                      color: bmiProvider.getBMIColor(bmi),
-                    ),
+                  Consumer<BmiProvider>(
+                    builder: (context, bmiProvider, child) {
+                      return Text(
+                        bmi.toStringAsFixed(1),
+                        style: GoogleFonts.montserrat(
+                          fontSize: _bmiTextSize,
+                          fontWeight: FontWeight.bold,
+                          color: bmiProvider.getBMIColor(bmi),
+                        ),
+                      );
+                    },
                   ),
                   Text(
                     'kg/m²',

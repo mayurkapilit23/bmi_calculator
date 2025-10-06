@@ -11,7 +11,6 @@ class BmiResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bmiProvider = Provider.of<BmiProvider>(context);
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -21,23 +20,31 @@ class BmiResultScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  // color: Colors.white,
-                  height: 300,
+                Consumer<BmiProvider>(
+                  builder: (context, bmiProvider, child) {
+                    return SizedBox(
+                      // color: Colors.white,
+                      height: 300,
 
-                  child: BMIGaugeRange(
-                    bmi: bmiProvider.bmiResult!,
-                    gender: bmiProvider.selectedGender!,
-                  ),
+                      child: BMIGaugeRange(
+                        bmi: bmiProvider.bmiResult!,
+                        gender: bmiProvider.selectedGender!,
+                      ),
+                    );
+                  },
                 ),
 
-                Column(
-                  children: [
-                    Text(
-                      "BMI: ${bmiProvider.bmiResult?.toStringAsFixed(1) ?? '--'}",
-                    ),
-                    Text("Category: ${bmiProvider.bmiCategory ?? '--'}"),
-                  ],
+                Consumer<BmiProvider>(
+                  builder: (context, bmiProvider, child) {
+                    return Column(
+                      children: [
+                        Text(
+                          "BMI: ${bmiProvider.bmiResult?.toStringAsFixed(1) ?? '--'}",
+                        ),
+                        Text("Category: ${bmiProvider.bmiCategory ?? '--'}"),
+                      ],
+                    );
+                  },
                 ),
 
                 CustomButton(

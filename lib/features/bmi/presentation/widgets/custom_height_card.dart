@@ -17,7 +17,6 @@ class CustomHeightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height * 0.25;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bmiProvider = Provider.of<BmiProvider>(context);
 
     return Container(
       padding: const EdgeInsets.all(15),
@@ -64,41 +63,45 @@ class CustomHeightCard extends StatelessWidget {
           ),
 
           // Height input (cm or ft/in)
-          bmiProvider.isCm
-              ? Expanded(
-                  child: CustomSlider(
-                    value: bmiProvider.heightCm,
-                    onChanged: (newHeight) {
-                      bmiProvider.setHeight(newHeight);
-                      bmiProvider.calculateBmi();
-                    },
-                  ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CustomCupertinoPicker(
-                      valueList: feetList,
-                      unitText: 'Ft',
-                      onSelectedItemChanged: (index) {
-                        final newFeet = feetList[index].toDouble();
-                        bmiProvider.setFeet(newFeet);
-                        bmiProvider.calculateBmi();
-                        HapticFeedback.selectionClick();
-                      },
-                    ),
-                    CustomCupertinoPicker(
-                      valueList: inchList,
-                      unitText: 'Inch',
-                      onSelectedItemChanged: (index) {
-                        final newInches = inchList[index].toDouble();
-                        bmiProvider.setInches(newInches);
-                        bmiProvider.calculateBmi();
-                        HapticFeedback.selectionClick();
-                      },
-                    ),
-                  ],
-                ),
+          Consumer<BmiProvider>(
+            builder: (context, bmiProvider, child) {
+              return Expanded(
+                child: bmiProvider.isCm
+                    ? CustomSlider(
+                        value: bmiProvider.heightCm,
+                        onChanged: (newHeight) {
+                          bmiProvider.setHeight(newHeight);
+                          bmiProvider.calculateBmi();
+                        },
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          CustomCupertinoPicker(
+                            valueList: feetList,
+                            unitText: 'Ft',
+                            onSelectedItemChanged: (index) {
+                              final newFeet = feetList[index].toDouble();
+                              bmiProvider.setFeet(newFeet);
+                              bmiProvider.calculateBmi();
+                              HapticFeedback.selectionClick();
+                            },
+                          ),
+                          CustomCupertinoPicker(
+                            valueList: inchList,
+                            unitText: 'Inch',
+                            onSelectedItemChanged: (index) {
+                              final newInches = inchList[index].toDouble();
+                              bmiProvider.setInches(newInches);
+                              bmiProvider.calculateBmi();
+                              HapticFeedback.selectionClick();
+                            },
+                          ),
+                        ],
+                      ),
+              );
+            },
+          ),
         ],
       ),
     );

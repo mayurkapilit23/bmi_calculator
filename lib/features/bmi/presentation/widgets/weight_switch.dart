@@ -22,37 +22,40 @@ class WeightSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bmiProvider = Provider.of<BmiProvider>(context);
     return Container(
       decoration: _switchDecoration,
       padding: const EdgeInsets.all(2),
 
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildUnitSwitch(
-            label: 'Kg',
-            isActive: bmiProvider.isKg,
-            onTap: () {
-              if (!bmiProvider.isKg) {
-                bmiProvider.weightToggle();
-              }
+      child: Consumer<BmiProvider>(
+        builder: (context, bmiProvider, child) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildUnitSwitch(
+                label: 'Kg',
+                isActive: bmiProvider.isKg,
+                onTap: () {
+                  if (!bmiProvider.isKg) {
+                    bmiProvider.weightToggle();
+                  }
 
-              HapticFeedback.selectionClick();
-            },
-          ),
-          SizedBox(width: 2),
-          _buildUnitSwitch(
-            label: 'Lbs',
-            isActive: !bmiProvider.isKg,
-            onTap: () {
-              if (bmiProvider.isKg) {
-                bmiProvider.weightToggle();
-              }
-              HapticFeedback.selectionClick();
-            },
-          ),
-        ],
+                  HapticFeedback.selectionClick();
+                },
+              ),
+              SizedBox(width: 2),
+              _buildUnitSwitch(
+                label: 'Lbs',
+                isActive: !bmiProvider.isKg,
+                onTap: () {
+                  if (bmiProvider.isKg) {
+                    bmiProvider.weightToggle();
+                  }
+                  HapticFeedback.selectionClick();
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

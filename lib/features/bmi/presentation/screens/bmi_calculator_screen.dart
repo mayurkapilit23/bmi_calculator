@@ -15,8 +15,7 @@ class BmiCalculatorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bmiProvider = Provider.of<BmiProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    // final bmiProvider = Provider.of<BmiProvider>(context);
     final isCurrentlyDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -29,18 +28,22 @@ class BmiCalculatorScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         actions: [
-          IconButton(
-            icon: AnimatedCrossFade(
-              firstChild: Icon(Icons.sunny),
-              secondChild: Icon(Icons.dark_mode),
-              crossFadeState: isCurrentlyDark
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
-              duration: Duration(milliseconds: 300),
-            ),
-            onPressed: () {
-              themeProvider.toggleTheme(isCurrentlyDark);
-              HapticFeedback.selectionClick();
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return IconButton(
+                icon: AnimatedCrossFade(
+                  firstChild: Icon(Icons.sunny),
+                  secondChild: Icon(Icons.dark_mode),
+                  crossFadeState: isCurrentlyDark
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  duration: Duration(milliseconds: 300),
+                ),
+                onPressed: () {
+                  themeProvider.toggleTheme(isCurrentlyDark);
+                  HapticFeedback.selectionClick();
+                },
+              );
             },
           ),
         ],
@@ -52,30 +55,35 @@ class BmiCalculatorScreen extends StatelessWidget {
           child: Column(
             children: [
               //gender section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomGenderCard(
-                    onTap: () {
-                      HapticFeedback.selectionClick();
-                      bmiProvider.genderSelection(Gender.male);
-                    },
-                    isSelected: bmiProvider.selectedGender == Gender.male,
-                    text: 'Male',
-                    asset: 'assets/boyIllustration.png',
-                  ),
+              Consumer<BmiProvider>(
+                builder: (context, bmiProvider, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomGenderCard(
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                          bmiProvider.genderSelection(Gender.male);
+                        },
+                        isSelected: bmiProvider.selectedGender == Gender.male,
+                        text: 'Male',
+                        asset: 'assets/boyIllustration.png',
+                      ),
 
-                  CustomGenderCard(
-                    isSelected: bmiProvider.selectedGender == Gender.female,
-                    onTap: () {
-                      HapticFeedback.selectionClick();
-                      bmiProvider.genderSelection(Gender.female);
-                    },
-                    text: 'Female',
-                    asset: 'assets/girlIllustration.png',
-                  ),
-                ],
+                      CustomGenderCard(
+                        isSelected: bmiProvider.selectedGender == Gender.female,
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                          bmiProvider.genderSelection(Gender.female);
+                        },
+                        text: 'Female',
+                        asset: 'assets/girlIllustration.png',
+                      ),
+                    ],
+                  );
+                },
               ),
+
               SizedBox(height: 25),
 
               //Height section
@@ -84,25 +92,29 @@ class BmiCalculatorScreen extends StatelessWidget {
               //Weight section
               CustomWeightCard(),
 
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
 
-              CustomButton(
-                text: 'Calculate BMI',
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                  if (bmiProvider.selectedGender != null) {
-                    bmiProvider.calculateBmi();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BmiResultScreen(),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please select Gender!!!')),
-                    );
-                  }
+              Consumer<BmiProvider>(
+                builder: (context, bmiProvider, child) {
+                  return CustomButton(
+                    text: 'Calculate BMI',
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      if (bmiProvider.selectedGender != null) {
+                        bmiProvider.calculateBmi();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BmiResultScreen(),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Please select Gender!!!')),
+                        );
+                      }
+                    },
+                  );
                 },
               ),
             ],

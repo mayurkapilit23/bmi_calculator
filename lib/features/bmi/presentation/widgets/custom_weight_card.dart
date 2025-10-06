@@ -18,10 +18,8 @@ class CustomWeightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bmiProvider = Provider.of<BmiProvider>(context);
-
     final height = MediaQuery.of(context).size.height * 0.25;
-    final width = MediaQuery.of(context).size.width * 0.5;
+    // final width = MediaQuery.of(context).size.width * 0.5;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
@@ -70,29 +68,33 @@ class CustomWeightCard extends StatelessWidget {
               ],
             ),
             Center(
-              child: SizedBox(
-                width: 150, // give it a fixed width
-                child: bmiProvider.isKg
-                    ? CustomCupertinoPicker(
-                        valueList: kgList,
-                        unitText: 'Kg',
-                        onSelectedItemChanged: (index) {
-                          final kgValue = kgList[index].toDouble();
-                          bmiProvider.setWeight(kgValue);
-                          bmiProvider.calculateBmi();
-                          HapticFeedback.selectionClick();
-                        },
-                      )
-                    : CustomCupertinoPicker(
-                        valueList: lbsList,
-                        unitText: 'Lbs',
-                        onSelectedItemChanged: (index) {
-                          final lbsValue = lbsList[index].toDouble();
-                          bmiProvider.setWeight(lbsValue);
-                          bmiProvider.calculateBmi();
-                          HapticFeedback.selectionClick();
-                        },
-                      ),
+              child: Consumer<BmiProvider>(
+                builder: (context, bmiProvider, child) {
+                  return SizedBox(
+                    width: 150, // give it a fixed width
+                    child: bmiProvider.isKg
+                        ? CustomCupertinoPicker(
+                            valueList: kgList,
+                            unitText: 'Kg',
+                            onSelectedItemChanged: (index) {
+                              final kgValue = kgList[index].toDouble();
+                              bmiProvider.setWeight(kgValue);
+                              bmiProvider.calculateBmi();
+                              HapticFeedback.selectionClick();
+                            },
+                          )
+                        : CustomCupertinoPicker(
+                            valueList: lbsList,
+                            unitText: 'Lbs',
+                            onSelectedItemChanged: (index) {
+                              final lbsValue = lbsList[index].toDouble();
+                              bmiProvider.setWeight(lbsValue);
+                              bmiProvider.calculateBmi();
+                              HapticFeedback.selectionClick();
+                            },
+                          ),
+                  );
+                },
               ),
             ),
           ],
