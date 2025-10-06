@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/bmi_provider.dart';
 
 class WeightSwitch extends StatelessWidget {
   const WeightSwitch({super.key});
@@ -18,6 +22,7 @@ class WeightSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bmiProvider = Provider.of<BmiProvider>(context);
     return Container(
       decoration: _switchDecoration,
       padding: const EdgeInsets.all(2),
@@ -25,25 +30,28 @@ class WeightSwitch extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // _buildUnitSwitch(
-          //   label: 'Kg',
-          //   isActive: state.isKg,
-          //   onTap:
-          //       () => {
-          //
-          //         HapticFeedback.selectionClick(),
-          //       },
-          // ),
+          _buildUnitSwitch(
+            label: 'Kg',
+            isActive: bmiProvider.isKg,
+            onTap: () {
+              if (!bmiProvider.isKg) {
+                bmiProvider.weightToggle();
+              }
+
+              HapticFeedback.selectionClick();
+            },
+          ),
           SizedBox(width: 2),
-          // _buildUnitSwitch(
-          //   label: 'Lbs',
-          //   isActive: !state.isKg,
-          //   onTap:
-          //       () => {
-          //         context.read<BmiBloc>().add(WeightUnitToggled(false)),
-          //         HapticFeedback.selectionClick(),
-          //       },
-          // ),
+          _buildUnitSwitch(
+            label: 'Lbs',
+            isActive: !bmiProvider.isKg,
+            onTap: () {
+              if (bmiProvider.isKg) {
+                bmiProvider.weightToggle();
+              }
+              HapticFeedback.selectionClick();
+            },
+          ),
         ],
       ),
     );

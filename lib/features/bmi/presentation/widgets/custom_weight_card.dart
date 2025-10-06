@@ -1,6 +1,8 @@
 import 'package:bmi_calculator/features/bmi/presentation/widgets/weight_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/bmi_provider.dart';
 import 'custom_cupertino_picker.dart';
 
 class CustomWeightCard extends StatelessWidget {
@@ -15,6 +17,8 @@ class CustomWeightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bmiProvider = Provider.of<BmiProvider>(context);
+
     final height = MediaQuery.of(context).size.height * 0.25;
     final width = MediaQuery.of(context).size.width * 0.5;
 
@@ -61,11 +65,17 @@ class CustomWeightCard extends StatelessWidget {
             Center(
               child: SizedBox(
                 width: 150, // give it a fixed width
-                child: CustomCupertinoPicker(
-                  valueList: lbsList,
-                  unitText: 'Lbs',
-                  onSelectedItemChanged: (lbsValue) {},
-                ),
+                child: bmiProvider.isKg
+                    ? CustomCupertinoPicker(
+                        valueList: kgList,
+                        unitText: 'Kg',
+                        onSelectedItemChanged: (kgValue) {},
+                      )
+                    : CustomCupertinoPicker(
+                        valueList: lbsList,
+                        unitText: 'Lbs',
+                        onSelectedItemChanged: (lbsValue) {},
+                      ),
               ),
             ),
           ],

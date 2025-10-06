@@ -2,8 +2,11 @@ import 'package:bmi_calculator/features/bmi/presentation/widgets/custom_button2.
 import 'package:bmi_calculator/features/bmi/presentation/widgets/custom_gender_card.dart';
 import 'package:bmi_calculator/features/bmi/presentation/widgets/custom_height_card.dart';
 import 'package:bmi_calculator/features/bmi/presentation/widgets/custom_weight_card.dart';
+import 'package:bmi_calculator/features/bmi/provider/bmi_provider.dart';
+import 'package:bmi_calculator/features/theme/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'bmi_result_screen.dart';
 
@@ -12,13 +15,32 @@ class BmiCalculatorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bmiProvider = Provider.of<BmiProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isCurrentlyDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
         title: Text(
           "BMI FitIndex Pro",
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
+        actions: [
+          IconButton(
+            icon: AnimatedCrossFade(
+              firstChild: Icon(Icons.sunny),
+              secondChild: Icon(Icons.dark_mode),
+              crossFadeState: isCurrentlyDark
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+              duration: Duration(milliseconds: 300),
+            ),
+            onPressed: () => themeProvider.toggleTheme(isCurrentlyDark),
+          ),
+        ],
       ),
 
       body: SafeArea(
@@ -33,16 +55,18 @@ class BmiCalculatorScreen extends StatelessWidget {
                   CustomGenderCard(
                     onTap: () {
                       HapticFeedback.selectionClick();
+                      bmiProvider.genderSelection(Gender.male);
                     },
-                    isSelected: true,
+                    isSelected: bmiProvider.selectedGender == Gender.male,
                     text: 'Male',
                     asset: 'assets/boyIllustration.png',
                   ),
 
                   CustomGenderCard(
-                    isSelected: false,
+                    isSelected: bmiProvider.selectedGender == Gender.female,
                     onTap: () {
                       HapticFeedback.selectionClick();
+                      bmiProvider.genderSelection(Gender.female);
                     },
                     text: 'Female',
                     asset: 'assets/girlIllustration.png',
@@ -62,8 +86,9 @@ class BmiCalculatorScreen extends StatelessWidget {
               CustomButton2(
                 text: 'Calculate BMI',
                 onTap: () {
-                  // Fire the CalculateBMI event if gender is selected
-                  // bmiBloc.add(CalculateBMI());
+                  // final height = bmiProvider.heightCm;
+                  // final weight = bmiProvider.weightKg;
+                  // bmiProvider.bmiCalculation(height, weight);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => BmiResultScreen()),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/bmi_provider.dart';
 import 'custom_cupertino_picker.dart';
+import 'custom_slider.dart';
 import 'height_switch.dart';
 
 class CustomHeightCard extends StatelessWidget {
@@ -12,8 +15,10 @@ class CustomHeightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height * 0.28;
+    final height = MediaQuery.of(context).size.height * 0.25;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final bmiProvider = Provider.of<BmiProvider>(context);
 
     return Container(
       padding: EdgeInsets.all(15),
@@ -43,6 +48,7 @@ class CustomHeightCard extends StatelessWidget {
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -53,34 +59,37 @@ class CustomHeightCard extends StatelessWidget {
             ],
           ),
 
-          //  CustomSlider(
-          //   value: state.heightCm,
-          //   onChanged: (v) {
-          //     context.read<BmiBloc>().add(HeightChangedCm(v));
-          //   },
-          // )
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          bmiProvider.isCm
+              ? Expanded(
+                  child: CustomSlider(
+                    value: bmiProvider.heightCm!,
+                    onChanged: (newHeight) {
+                      bmiProvider.setHeight(newHeight);
+                    },
+                  ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-            children: [
-              CustomCupertinoPicker(
-                valueList: feetList,
-                unitText: 'Ft',
-                onSelectedItemChanged: (index) {
-                  HapticFeedback.selectionClick();
-                },
-              ),
-              CustomCupertinoPicker(
-                valueList: inchList,
-                unitText: 'Inch',
-                onSelectedItemChanged: (index) {
-                  HapticFeedback.selectionClick();
-                },
-              ),
-            ],
-          ),
-
-          Text('5 feet 3 inches (160 cm)'),
+                  children: [
+                    CustomCupertinoPicker(
+                      valueList: feetList,
+                      unitText: 'Ft',
+                      onSelectedItemChanged: (newFeet) {
+                        bmiProvider.setFeet(newFeet);
+                        HapticFeedback.selectionClick();
+                      },
+                    ),
+                    CustomCupertinoPicker(
+                      valueList: inchList,
+                      unitText: 'Inch',
+                      onSelectedItemChanged: (newInches) {
+                        bmiProvider.setInches(newInches);
+                        HapticFeedback.selectionClick();
+                      },
+                    ),
+                  ],
+                ),
         ],
       ),
     );

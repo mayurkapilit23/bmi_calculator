@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/bmi_provider.dart';
 
 class HeightSwitch extends StatelessWidget {
   const HeightSwitch({super.key});
@@ -18,6 +22,7 @@ class HeightSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bmiProvider = Provider.of<BmiProvider>(context);
     return Container(
       decoration: _switchDecoration,
       padding: const EdgeInsets.all(2),
@@ -25,24 +30,29 @@ class HeightSwitch extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // _buildUnitSwitch(
-          //   label: 'Cm',
-          //   isActive: state.isCm,
-          //   onTap:
-          //       () => {
-          //
-          //         HapticFeedback.selectionClick(),
-          //       },
-          // ),
-          SizedBox(width: 2),
-          // _buildUnitSwitch(
-          //   label: 'Ft',
-          //   isActive: !state.isCm,
-          //   onTap:
-          //       () => {
+          _buildUnitSwitch(
+            label: 'Cm',
+            isActive: bmiProvider.isCm,
+            onTap: () {
+              if (!bmiProvider.isCm) {
+                bmiProvider.heightToggle();
+              }
 
-          //       },
-          // ),
+              HapticFeedback.selectionClick();
+            },
+          ),
+          SizedBox(width: 2),
+          _buildUnitSwitch(
+            label: 'Ft',
+            isActive: !bmiProvider.isCm,
+            onTap: () {
+              if (bmiProvider.isCm) {
+                bmiProvider.heightToggle();
+              }
+
+              HapticFeedback.selectionClick();
+            },
+          ),
         ],
       ),
     );
