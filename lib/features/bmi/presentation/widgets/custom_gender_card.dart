@@ -61,7 +61,16 @@ class CustomGenderCard extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [Text(text), Image.asset(asset, height: 100)],
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Image.asset(asset, height: 100),
+          ],
         ),
       ),
     );

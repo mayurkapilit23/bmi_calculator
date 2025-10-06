@@ -1,5 +1,6 @@
 import 'package:bmi_calculator/features/bmi/presentation/widgets/weight_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/bmi_provider.dart';
@@ -57,7 +58,13 @@ class CustomWeightCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('Weight', style: TextStyle(fontWeight: FontWeight.w700)),
+                Text(
+                  'Weight',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
 
                 WeightSwitch(),
               ],
@@ -69,12 +76,22 @@ class CustomWeightCard extends StatelessWidget {
                     ? CustomCupertinoPicker(
                         valueList: kgList,
                         unitText: 'Kg',
-                        onSelectedItemChanged: (kgValue) {},
+                        onSelectedItemChanged: (index) {
+                          final kgValue = kgList[index].toDouble();
+                          bmiProvider.setWeight(kgValue);
+                          bmiProvider.calculateBmi();
+                          HapticFeedback.selectionClick();
+                        },
                       )
                     : CustomCupertinoPicker(
                         valueList: lbsList,
                         unitText: 'Lbs',
-                        onSelectedItemChanged: (lbsValue) {},
+                        onSelectedItemChanged: (index) {
+                          final lbsValue = lbsList[index].toDouble();
+                          bmiProvider.setWeight(lbsValue);
+                          bmiProvider.calculateBmi();
+                          HapticFeedback.selectionClick();
+                        },
                       ),
               ),
             ),

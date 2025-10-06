@@ -1,4 +1,4 @@
-import 'package:bmi_calculator/features/bmi/presentation/widgets/custom_button2.dart';
+import 'package:bmi_calculator/core/widgets/custom_button.dart';
 import 'package:bmi_calculator/features/bmi/presentation/widgets/custom_gender_card.dart';
 import 'package:bmi_calculator/features/bmi/presentation/widgets/custom_height_card.dart';
 import 'package:bmi_calculator/features/bmi/presentation/widgets/custom_weight_card.dart';
@@ -38,7 +38,10 @@ class BmiCalculatorScreen extends StatelessWidget {
                   : CrossFadeState.showFirst,
               duration: Duration(milliseconds: 300),
             ),
-            onPressed: () => themeProvider.toggleTheme(isCurrentlyDark),
+            onPressed: () {
+              themeProvider.toggleTheme(isCurrentlyDark);
+              HapticFeedback.selectionClick();
+            },
           ),
         ],
       ),
@@ -83,16 +86,23 @@ class BmiCalculatorScreen extends StatelessWidget {
 
               SizedBox(height: 25),
 
-              CustomButton2(
+              CustomButton(
                 text: 'Calculate BMI',
                 onTap: () {
-                  // final height = bmiProvider.heightCm;
-                  // final weight = bmiProvider.weightKg;
-                  // bmiProvider.bmiCalculation(height, weight);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => BmiResultScreen()),
-                  );
+                  HapticFeedback.selectionClick();
+                  if (bmiProvider.selectedGender != null) {
+                    bmiProvider.calculateBmi();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BmiResultScreen(),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Please select Gender!!!')),
+                    );
+                  }
                 },
               ),
             ],

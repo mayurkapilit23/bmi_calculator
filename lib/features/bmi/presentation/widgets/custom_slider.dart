@@ -19,13 +19,15 @@ class CustomSlider extends StatelessWidget {
         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
         overlayColor: Colors.blueAccent.withOpacity(0.2),
         overlayShape: const RoundSliderOverlayShape(overlayRadius: 20),
+        valueIndicatorColor: AppColors.accentBlueDarkColor.withOpacity(0.9),
+        valueIndicatorTextStyle: const TextStyle(fontSize: 14),
+        showValueIndicator: ShowValueIndicator.onDrag,
       ),
       child: Slider(
         value: value,
         min: 100,
         max: 220,
         divisions: 120,
-        // step = 1 cm
         label: "${value.toStringAsFixed(0)} cm",
         onChanged: onChanged,
       ),
